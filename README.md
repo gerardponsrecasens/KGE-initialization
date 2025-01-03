@@ -1,7 +1,8 @@
 # Paper Title Here
 
 This repository contains the datasets and script for the paper **Paper Title here**. Part of this repository has been built from  [LKGE: Lifelong Embedding Learning and Transfer for Growing Knowledge Graphs](https://github.com/nju-websoft/LKGE) and [incDE: Towards Continual Knowledge Graph Embedding via Incremental Distillation](https://github.com/seukgcode/IncDE) repositories, adding the different initialization methods to them. We will like to thank the respective authors for providing them.
-![alt text](Picture1.png)
+
+![alt text](Pipeline.png)
 The scripts have been implemented in Python3, concretely Python version 3.9.7. The main requirements to run the scripts are:
 - numpy==1.26.4
 - pykeen==1.11.0
