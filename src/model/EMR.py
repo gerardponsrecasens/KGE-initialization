@@ -63,13 +63,8 @@ class EMR(BaseModel):
             if init == 3:
                 new_ent_embeddings = model_initialization(self.args, self.kg, new_ent_embeddings, new_rel_embeddings, old_entities, new_entities_snapshot, sd_frac)
 
-            if init == 13:
-                with open('./dicts/text/LKGE/initialization'+str(self.args.snapshot+1)+'.pkl', 'rb') as file:
-                    new_entities_init = pickle.load(file)
-                
-                for entity in new_entities_init:
-                    idx = self.kg.entity2id[entity]
-                    new_ent_embeddings[idx] = torch.tensor(new_entities_init[entity]).to(self.args.device).double()
+            if init == 15:
+                new_ent_embeddings = text_initialization(self.kg, new_ent_embeddings, old_entities, new_entities_snapshot)
                     
         self.ent_embeddings.weight = torch.nn.Parameter(new_ent_embeddings)
         self.rel_embeddings.weight = torch.nn.Parameter(new_rel_embeddings)

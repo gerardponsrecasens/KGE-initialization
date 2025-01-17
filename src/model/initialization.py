@@ -120,3 +120,75 @@ def model_initialization(args, kg, new_ent_embeddings, new_rel_embeddings, old_e
 
             new_ent_embeddings[idx] = initial
     return new_ent_embeddings
+
+
+def train_mapping(x, y, learning_rate=1e-3, epochs=150, validation_split=0.1):
+    device = x.device  
+
+    # Split the data into training and validation sets
+    n_samples = x.shape[0]
+    split_idx = int(n_samples * (1 - validation_split))
+
+    # Training data
+    x_train = x[:split_idx]
+    y_train = y[:split_idx]
+
+    # Validation data
+    x_val = x[split_idx:]
+    y_val = y[split_idx:]
+
+    n_features = x_train.shape[1]
+
+    # Initialize A and b as torch tensors with smaller values for stability
+    A = torch.randn(n_features, n_features, device=device) * 0.01
+    b = torch.randn(n_features, device=device) * 0.01
+
+    A = torch.nn.Parameter(A)  
+    b = torch.nn.Parameter(b)
+
+    optimizer = torch.optim.Adam([A, b], lr=learning_rate)
+    old_loss = 1000000
+    for epoch in range(epochs):
+        optimizer.zero_grad()
+        
+        y_train_pred = x_train @ A.T + b
+        train_loss = torch.mean((y_train_pred - y_train) ** 2)
+
+        y_val_pred = x_val @ A.T + b
+        val_loss = torch.mean((y_val_pred - y_val) ** 2)
+
+        train_loss.backward(retain_graph=True)
+        optimizer.step()
+
+        new_loss = val_loss.item()
+        if new_loss > old_loss:
+            break
+        else:
+            old_loss = new_loss
+
+    return A.detach().cpu().numpy(), b.detach().cpu().numpy()
+
+def text_initialization(kg, new_ent_embeddings, old_entities, new_entities_snapshot):
+
+    with open('./dicts/'+'sentence_embeddings.pkl', "rb") as input_file:
+        text_embeddings = pickle.load(input_file)
+    x = []
+    y = []
+    for ent in old_entities:
+        if ent in text_embeddings:
+            x.append(text_embeddings[ent])
+            y.append(new_ent_embeddings[kg.entity2id[ent]])
+    x = torch.tensor(x)
+    y = torch.stack(y)
+
+    x = x.to('cuda')
+    y = y.to('cuda')
+    
+    trained_A, trained_b = train_mapping(x, y)
+
+    for new_entity in new_entities_snapshot:
+        if new_entity in text_embeddings:
+            mapped_embedding = torch.tensor(text_embeddings[new_entity] @ trained_A.T + trained_b, dtype=new_ent_embeddings.dtype, device='cuda')
+            new_ent_embeddings[kg.entity2id[new_entity]] = mapped_embedding
+
+    return new_ent_embeddings
