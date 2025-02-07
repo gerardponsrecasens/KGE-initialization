@@ -1,6 +1,6 @@
-# Paper Title Here
+# On the Initialization of Knowledge Graph Embeddings in Dynamic Knowledge Graphs
 
-This repository contains the datasets and script for the paper **Paper Title here**. Part of this repository has been built from  [LKGE: Lifelong Embedding Learning and Transfer for Growing Knowledge Graphs](https://github.com/nju-websoft/LKGE) and [incDE: Towards Continual Knowledge Graph Embedding via Incremental Distillation](https://github.com/seukgcode/IncDE) repositories, adding the different initialization methods to them. The script containing the initializations can be found in */src/model/initilization.py*. We will like to thank the respective authors for providing them.
+This repository contains the datasets and script for the paper **On the Initialization of Knowledge Graph Embeddings in Dynamic Knowledge Graphs**. Part of this repository has been built from  [LKGE: Lifelong Embedding Learning and Transfer for Growing Knowledge Graphs](https://github.com/nju-websoft/LKGE) and [incDE: Towards Continual Knowledge Graph Embedding via Incremental Distillation](https://github.com/seukgcode/IncDE) repositories, adding the different initialization methods to them. The script containing the initializations can be found in */src/model/initilization.py*. We will like to thank the respective authors for providing them.
 
 ![alt text](Pipeline.png)
 The scripts have been implemented in Python3, concretely Python version 3.9.7. The main requirements to run the scripts are:
@@ -11,7 +11,7 @@ The scripts have been implemented in Python3, concretely Python version 3.9.7. T
 
 The repository is structured as follows:
 
-* The main experiments can be run with the *main.py* script, which allows changing the initialization strategies, incremental learning techinques and datasets. The *experiments.sh* script contains the scripts to automatically genererate the experiments in the paper. However, to run a concrete experiment the basic syntax would be the following, where -dataset can be in *[ENTITY10, ENTITY50, ENTITY100, ENTITY200, ENTITY500, ENTITY1000]*, depending on the number of new entities added in each additional snapshot, -lifelong_name can be *LKGE*, *incDE*, *EWC*, *EMR* or *finetune*, and -init can be 0 for random initialization, 1 for ontology initialization, 3 for model initialization and 13 for text initialization. 
+* The main experiments can be run with the *main.py* script, which allows changing the initialization strategies, incremental learning techinques and datasets. The *experiments.sh* script contains the scripts to automatically genererate the experiments in the paper. However, to run a concrete experiment the basic syntax would be the following, where -dataset can be in *[ENTITY10, ENTITY50, ENTITY100, ENTITY200, ENTITY500, ENTITY1000]*, depending on the number of new entities added in each additional snapshot, -lifelong_name can be *LKGE*, *incDE*, *EWC*, *EMR* or *finetune*, and -init can be 0 for random initialization, 1 for ontology initialization or 3 for model initialization. 
 ```bash
 python main.py -dataset <dataset-name> -gpu 0 -lifelong_name <incremental-learning> -init <initialization-strategy> 
 ```
